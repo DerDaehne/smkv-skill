@@ -3,8 +3,6 @@
 > Don't let the brainrot get over you - Let the ai be challenging and make you think!
 
 This repository contains a single AI agent skill packaged for multiple tools.
-The skill logic lives in one place; the files in this repo are thin wrappers
-that each tool understands.
 
 ---
 
@@ -22,14 +20,23 @@ that each tool understands.
 
 **Requirement:** [Claude Code](https://claude.ai/code) installed.
 
-No installation step needed. Skills under `.claude/skills/` are picked up
-automatically when Claude Code runs inside this directory.
+A skill is a directory containing `SKILL.md`. Claude Code discovers skills from
+`~/.claude/skills/` (global, all projects) or `.claude/skills/` (project-local).
 
 ```bash
-# Clone the repo into your project (or add as a git submodule):
-git clone https://github.com/<owner>/smkv-skill .claude/skills/smkv-skill
+# Global install — available in every Claude Code session:
+mkdir -p ~/.claude/skills/smkv
+curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/.claude/skills/smkv/SKILL.md \
+  -o ~/.claude/skills/smkv/SKILL.md
 
-# Then invoke inside a Claude Code session:
+# Project-local install — only available in the current repo:
+mkdir -p .claude/skills/smkv
+curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/.claude/skills/smkv/SKILL.md \
+  -o .claude/skills/smkv/SKILL.md
+```
+
+Invoke inside a Claude Code session:
+```
 /smkv
 ```
 
@@ -43,16 +50,13 @@ There are two ways to use this skill in Gemini CLI:
 
 ### Option A — Agent Skill (recommended)
 
-The Agent Skill is auto-activated when your request matches the skill
-description, or you can enable it explicitly.
+This repo contains a `gemini-extension.json` and `skills/smkv/SKILL.md` at the root,
+which is the structure `gemini skills install` expects. The skill is auto-activated
+when your request matches the description, or you can enable it explicitly.
 
 ```bash
 # Install directly from this repo:
-gemini skills install https://github.com/<owner>/smkv-skill
-
-# Or link a local clone:
-git clone https://github.com/<owner>/smkv-skill
-gemini skills link ./smkv-skill/.gemini/skills/smkv
+gemini skills install https://github.com/DerDaehne/smkv-skill
 
 # Verify installation:
 gemini skills list
@@ -60,30 +64,20 @@ gemini skills list
 # Enable manually inside a session if not auto-activated:
 /skills enable smkv
 ```
-
-### Option B — Slash Command
-
-The `.gemini/commands/smkv.toml` is picked up automatically when Gemini CLI
-runs inside a directory that contains (or is below) this repo.
-
-```bash
-# Inside a Gemini CLI session:
-/smkv [optional arguments]
-```
-
 ---
 
 ## GitHub Copilot
 
 **Requirement:** GitHub Copilot active in VS Code, JetBrains, or on github.com.
 
-No installation needed. `.github/copilot-instructions.md` is loaded
-automatically for every Copilot session inside this repository.
-
-To apply the instructions to a different project, copy the file:
+Copilot loads `.github/copilot-instructions.md` automatically for every session
+in the repository — no activation command needed.
 
 ```bash
-cp .github/copilot-instructions.md /path/to/your/project/.github/copilot-instructions.md
+# Add to an existing project:
+mkdir -p .github
+curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/.github/copilot-instructions.md \
+  -o .github/copilot-instructions.md
 ```
 
 ---
@@ -92,13 +86,15 @@ cp .github/copilot-instructions.md /path/to/your/project/.github/copilot-instruc
 
 ```
 .
+├── gemini-extension.json            # Gemini CLI extension manifest
+├── skills/
+│   └── smkv/
+│       └── SKILL.md                 # Gemini CLI Agent Skill (remote install)
 ├── .claude/
 │   └── skills/
-│       └── smkv.md                  # Claude Code skill
+│       └── smkv/
+│           └── SKILL.md             # Claude Code skill
 ├── .gemini/
-│   ├── skills/
-│   │   └── smkv/
-│   │       └── SKILL.md             # Gemini CLI Agent Skill
 │   └── commands/
 │       └── smkv.toml                # Gemini CLI Slash Command
 ├── .github/
