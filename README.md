@@ -26,12 +26,12 @@ A skill is a directory containing `SKILL.md`. Claude Code discovers skills from
 ```bash
 # Global install — available in every Claude Code session:
 mkdir -p ~/.claude/skills/smkv
-curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/.claude/skills/smkv/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/SKILL.md \
   -o ~/.claude/skills/smkv/SKILL.md
 
 # Project-local install — only available in the current repo:
 mkdir -p .claude/skills/smkv
-curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/.claude/skills/smkv/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/SKILL.md \
   -o .claude/skills/smkv/SKILL.md
 ```
 
@@ -46,13 +46,10 @@ Invoke inside a Claude Code session:
 
 **Requirement:** [Gemini CLI](https://github.com/google-gemini/gemini-cli) installed.
 
-There are two ways to use this skill in Gemini CLI:
-
-### Option A — Agent Skill (recommended)
-
-This repo contains a `gemini-extension.json` and `skills/smkv/SKILL.md` at the root,
-which is the structure `gemini skills install` expects. The skill is auto-activated
-when your request matches the description, or you can enable it explicitly.
+This repo is structured as a standalone skill directory: `gemini skills install`
+treats the repo root as the skill root and picks up `SKILL.md` directly. The skill
+is auto-activated when your request matches the description, or you can enable it
+explicitly.
 
 ```bash
 # Install directly from this repo:
@@ -64,6 +61,7 @@ gemini skills list
 # Enable manually inside a session if not auto-activated:
 /skills enable smkv
 ```
+
 ---
 
 ## GitHub Copilot
@@ -86,14 +84,8 @@ curl -fsSL https://raw.githubusercontent.com/DerDaehne/smkv-skill/main/.github/c
 
 ```
 .
+├── SKILL.md                         # Agent Skill definition (Gemini CLI / Claude Code)
 ├── gemini-extension.json            # Gemini CLI extension manifest
-├── skills/
-│   └── smkv/
-│       └── SKILL.md                 # Gemini CLI Agent Skill (remote install)
-├── .claude/
-│   └── skills/
-│       └── smkv/
-│           └── SKILL.md             # Claude Code skill
 ├── .gemini/
 │   └── commands/
 │       └── smkv.toml                # Gemini CLI Slash Command
